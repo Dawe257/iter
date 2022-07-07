@@ -9,37 +9,36 @@ public class Randoms implements Iterable<Integer> {
 
     private final Random random;
     private final List<Integer> numbers;
-    private final Iterator<Integer> iterator;
-    private static int min;
-    private static int max;
+    private final int min;
+    private final int max;
 
     public Randoms(int min, int max) {
         random = new Random();
         numbers = new ArrayList<>();
-        iterator = new RandomIterator();
-        Randoms.min = min;
-        Randoms.max = max + 1;
-        numbers.add(random.nextInt(Randoms.min, Randoms.max));
+        this.min = min;
+        this.max = max + 1;
+        numbers.add(random.nextInt(this.min, this.max));
+    }
+
+    private void addRandomNumber() {
+        numbers.add(random.nextInt(this.min, this.max));
     }
 
     @Override
     public Iterator<Integer> iterator() {
-        return iterator;
-    }
+        return new Iterator<>() {
+            int index = 0;
 
-    public class RandomIterator implements Iterator<Integer> {
+            @Override
+            public boolean hasNext() {
+                return index < numbers.size();
+            }
 
-        int index = 0;
-
-        @Override
-        public boolean hasNext() {
-            return index < numbers.size();
-        }
-
-        @Override
-        public Integer next() {
-            numbers.add(random.nextInt(Randoms.min, Randoms.max));
-            return numbers.get(index++);
-        }
+            @Override
+            public Integer next() {
+                addRandomNumber();
+                return numbers.get(index++);
+            }
+        };
     }
 }
